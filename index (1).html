@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Смакота — доставка еды и покупок</title>
+<style>
+  :root{
+    --ink:#241B15;
+    --ink-soft:#5B5049;
+    --cream:#FFF8EF;
+    --card:#FFFFFF;
+    --line:#EEE1D2;
+    --brand:#E8491D;
+    --brand-dark:#C23814;
+    --green:#2F6F4E;
+    --green-bg:#E9F3EC;
+    --yellow:#F4A300;
+    --radius-s:8px;
+    --radius-m:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces','Iowan Old Style',Georgia,serif;
+    font-weight:650;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{display:block;max-width:100%;}
+  button{font-family:inherit;cursor:pointer;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  /* ---------- header ---------- */
+  header{
+    position:sticky;top:0;z-index:40;
+    background:rgba(255,248,239,0.94);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar{
+    display:flex;align-items:center;gap:22px;
+    padding:16px 0;
+  }
+  .logo{
+    display:flex;align-items:baseline;gap:2px;
+    font-family:'Fraunces',Georgia,serif;
+    font-size:26px;font-weight:800;color:var(--brand);
+    flex-shrink:0;
+  }
+  .logo span{color:var(--ink);}
+  .mode-switch{
+    display:flex;background:#F1E7D9;border-radius:999px;padding:3px;flex-shrink:0;
+  }
+  .mode-switch button{
+    border:none;background:transparent;padding:8px 16px;border-radius:999px;
+    font-size:14px;font-weight:600;color:var(--ink-soft);
+  }
+  .mode-switch button.active{background:var(--ink);color:#fff;}
+  .address-field{
+    flex:1;min-width:0;
+    display:flex;align-items:center;gap:10px;
+    background:var(--card);border:1px solid var(--line);
+    border-radius:999px;padding:10px 18px;
+  }
+  .address-field svg{flex-shrink:0;color:var(--brand);}
+  .address-field input{
+    border:none;outline:none;background:transparent;font-size:14px;
+    width:100%;color:var(--ink);font-family:inherit;
+  }
+  .city-pill{
+    display:flex;align-items:center;gap:6px;
+    font-size:14px;font-weight:600;color:var(--ink);
+    padding:10px 4px;flex-shrink:0;
+  }
+  .btn-primary{
+    background:var(--brand);color:#fff;border:none;border-radius:999px;
+    padding:11px 22px;font-size:14px;font-weight:700;flex-shrink:0;
+    transition:background .15s ease;
+  }
+  .btn-primary:hover{background:var(--brand-dark);}
+
+  .cat-nav{
+    display:flex;gap:8px;overflow-x:auto;padding:12px 0 16px;
+    scrollbar-width:none;
+  }
+  .cat-nav::-webkit-scrollbar{display:none;}
+  .cat-nav a{
+    flex-shrink:0;font-size:14px;font-weight:600;color:var(--ink-soft);
+    background:var(--card);border:1px solid var(--line);
+    padding:9px 16px;border-radius:999px;white-space:nowrap;
+    transition:border-color .15s ease, color .15s ease;
+  }
+  .cat-nav a:hover, .cat-nav a.active{
+    border-color:var(--brand);color:var(--brand);
+  }
+
+  /* ---------- hero / promos ---------- */
+  .promo-section{padding:34px 0 8px;}
+  .section-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:16px;
+  }
+  .section-head h2{font-size:26px;}
+  .section-head .see-all{font-size:14px;font-weight:600;color:var(--brand);}
+
+  .promo-row{
+    display:flex;gap:16px;overflow-x:auto;padding-bottom:6px;
+    scrollbar-width:none;
+  }
+  .promo-row::-webkit-scrollbar{display:none;}
+  .promo-card{
+    flex:0 0 300px;
+    background:linear-gradient(135deg,#2B2018,#241B15);
+    border-radius:var(--radius-m);
+    padding:22px;color:#fff;position:relative;overflow:hidden;
+    min-height:150px;
+  }
+  .promo-card:nth-child(2){background:linear-gradient(135deg,var(--brand-dark),var(--brand));}
+  .promo-card:nth-child(3){background:linear-gradient(135deg,#1F5A3C,var(--green));}
+  .promo-tag{
+    display:inline-block;font-size:12px;font-weight:700;
+    background:rgba(255,255,255,0.16);padding:4px 10px;border-radius:6px;
+    margin-bottom:14px;
+  }
+  .promo-card h3{font-size:20px;color:#fff;margin-bottom:6px;font-weight:650;}
+  .promo-card p{font-size:13px;color:rgba(255,255,255,0.75);margin:0;}
+
+  /* ---------- restaurant grid ---------- */
+  .grid-section{padding:38px 0;}
+  .rest-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+  }
+  .rest-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius-m);
+    overflow:hidden;transition:border-color .15s ease, transform .15s ease;
+  }
+  .rest-card:hover{border-color:#E3B79A;transform:translateY(-2px);}
+  .rest-photo{
+    height:140px;position:relative;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-size:32px;font-weight:700;color:#fff;
+  }
+  .ph-1{background:linear-gradient(135deg,#E8491D,#F4A300);}
+  .ph-2{background:linear-gradient(135deg,#2F6F4E,#8FBF9F);}
+  .ph-3{background:linear-gradient(135deg,#5B3A29,#8C6142);}
+  .ph-4{background:linear-gradient(135deg,#C23814,#7A2A11);}
+  .ph-5{background:linear-gradient(135deg,#3A5B7D,#7CA3C4);}
+  .ph-6{background:linear-gradient(135deg,#8C5E9C,#C79FD1);}
+  .badge-new{
+    position:absolute;top:10px;left:10px;
+    background:#fff;color:var(--brand);font-size:11px;font-weight:700;
+    padding:3px 9px;border-radius:6px;
+  }
+  .rest-body{padding:14px 16px 16px;}
+  .rest-title{font-size:16px;font-weight:700;margin-bottom:4px;}
+  .rest-meta{
+    display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-soft);
+    margin-bottom:10px;
+  }
+  .rating{
+    display:inline-flex;align-items:center;gap:3px;color:var(--ink);font-weight:700;
+  }
+  .rating svg{color:var(--yellow);}
+  .rest-tags{display:flex;gap:8px;font-size:12.5px;color:var(--ink-soft);}
+  .free-delivery{color:var(--green);font-weight:600;}
+
+  /* ---------- how it works ---------- */
+  .how-section{padding:46px 0;background:#F6ECDE;border-radius:24px;margin:20px 24px;}
+  .how-section .wrap{max-width:1180px;}
+  .how-grid{
+    display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:26px;
+  }
+  .how-step{display:flex;gap:14px;}
+  .how-num{
+    font-family:'Fraunces',serif;font-size:34px;font-weight:700;color:var(--brand);
+    line-height:1;flex-shrink:0;
+  }
+  .how-step h3{font-size:17px;margin-bottom:6px;}
+  .how-step p{font-size:14px;color:var(--ink-soft);line-height:1.5;margin:0;}
+
+  /* ---------- dishes ---------- */
+  .dish-row{
+    display:flex;gap:16px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none;
+  }
+  .dish-row::-webkit-scrollbar{display:none;}
+  .dish-card{flex:0 0 150px;}
+  .dish-photo{
+    width:150px;height:110px;border-radius:var(--radius-s);
+    display:flex;align-items:center;justify-content:center;
+    font-size:26px;margin-bottom:8px;
+  }
+  .dish-name{font-size:13.5px;font-weight:600;line-height:1.3;margin-bottom:3px;}
+  .dish-rating{font-size:12.5px;color:var(--ink-soft);}
+
+  /* ---------- app promo ---------- */
+  .app-section{padding:50px 0;}
+  .app-card{
+    background:var(--ink);color:#fff;border-radius:var(--radius-m);
+    padding:44px 48px;display:flex;align-items:center;justify-content:space-between;gap:24px;
+  }
+  .app-card h2{color:#fff;font-size:28px;max-width:420px;margin-bottom:10px;}
+  .app-card p{color:rgba(255,255,255,0.7);font-size:14.5px;max-width:420px;margin:0 0 22px;}
+  .app-buttons{display:flex;gap:10px;}
+  .app-buttons a{
+    border:1px solid rgba(255,255,255,0.3);border-radius:10px;
+    padding:10px 16px;font-size:13px;font-weight:600;
+  }
+  .app-badge{
+    flex-shrink:0;width:120px;height:120px;border-radius:24px;
+    background:linear-gradient(135deg,var(--brand),var(--yellow));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-size:40px;font-weight:800;color:#fff;
+  }
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line);padding:44px 0 30px;}
+  .footer-top{
+    display:flex;justify-content:space-between;gap:40px;flex-wrap:wrap;
+    padding-bottom:32px;border-bottom:1px solid var(--line);margin-bottom:24px;
+  }
+  .footer-brand .logo{margin-bottom:10px;}
+  .footer-brand p{font-size:13px;color:var(--ink-soft);max-width:260px;line-height:1.5;}
+  .footer-cols{display:flex;gap:56px;flex-wrap:wrap;}
+  .footer-col h4{font-size:13px;font-weight:700;margin-bottom:12px;color:var(--ink);}
+  .footer-col a{
+    display:block;font-size:13.5px;color:var(--ink-soft);margin-bottom:9px;
+  }
+  .footer-col a:hover{color:var(--brand);}
+  .footer-cities{
+    font-size:13px;color:var(--ink-soft);line-height:2.1;
+  }
+  .footer-cities a{color:var(--ink-soft);margin-right:2px;}
+  .footer-cities a:hover{color:var(--brand);}
+  .footer-cities a:not(:last-child)::after{content:"·";margin:0 6px;color:var(--line);}
+  .footer-bottom{
+    display:flex;justify-content:space-between;align-items:center;
+    font-size:12.5px;color:var(--ink-soft);flex-wrap:wrap;gap:10px;
+  }
+  .footer-bottom a{margin-right:16px;}
+
+  @media (max-width:860px){
+    .topbar{flex-wrap:wrap;}
+    .address-field{order:3;flex-basis:100%;}
+    .rest-grid{grid-template-columns:repeat(2,1fr);}
+    .how-grid{grid-template-columns:1fr;}
+    .how-section{margin:20px 12px;padding:34px 20px;}
+    .app-card{flex-direction:column;align-items:flex-start;text-align:left;}
+  }
+  @media (max-width:560px){
+    .rest-grid{grid-template-columns:1fr;}
+    .wrap{padding:0 16px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <a href="#" class="logo">Смак<span>ота</span></a>
+
+      <div class="mode-switch">
+        <button class="active">Доставка</button>
+        <button>Навынос</button>
+      </div>
+
+      <div class="address-field">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>
+        <input type="text" placeholder="Куда доставить заказ?">
+      </div>
+
+      <a href="#" class="city-pill">Минск ▾</a>
+      <button class="btn-primary">Войти</button>
+    </div>
+
+  </div>
+</header>
+
+<main>
+
+  <section class="grid-section wrap" style="padding-top:34px;">
+    <div class="section-head">
+      <h2>Цветочные магазины</h2>
+      <a href="#" class="see-all">Смотреть все</a>
+    </div>
+    <div class="rest-grid">
+
+      <a href="#" class="rest-card">
+        <div class="rest-photo ph-4">ПР</div>
+        <div class="rest-body">
+          <div class="rest-title">Панета Роз</div>
+          <div class="rest-meta">
+            <span class="rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.6 4.3L18 21l-6-4.4L6 21l1.6-7.7L2 9h7z"/></svg>4.8</span>
+            <span>·</span><span>184 отзыва</span>
+          </div>
+          <div class="rest-tags"><span class="free-delivery">Бесплатно</span><span>·</span><span>40–60 мин</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="rest-card">
+        <div class="rest-photo ph-1">РЦ</div>
+        <div class="rest-body">
+          <div class="rest-title">Расцветай</div>
+          <div class="rest-meta">
+            <span class="rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.6 4.3L18 21l-6-4.4L6 21l1.6-7.7L2 9h7z"/></svg>4.9</span>
+            <span>·</span><span>276 отзывов</span>
+          </div>
+          <div class="rest-tags"><span class="free-delivery">Бесплатно</span><span>·</span><span>30–50 мин</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="rest-card">
+        <div class="rest-photo ph-2">ВР</div>
+        <div class="rest-body">
+          <div class="rest-title">Веранда</div>
+          <div class="rest-meta">
+            <span class="rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.6 4.3L18 21l-6-4.4L6 21l1.6-7.7L2 9h7z"/></svg>4.7</span>
+            <span>·</span><span>152 отзыва</span>
+          </div>
+          <div class="rest-tags"><span>Бесплатно от 60 руб.</span><span>·</span><span>45–70 мин</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="rest-card">
+        <div class="rest-photo ph-6">ББ</div>
+        <div class="rest-body">
+          <div class="rest-title">БукетБери</div>
+          <div class="rest-meta">
+            <span class="rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.6 4.3L18 21l-6-4.4L6 21l1.6-7.7L2 9h7z"/></svg>4.6</span>
+            <span>·</span><span>97 отзывов</span>
+          </div>
+          <div class="rest-tags"><span class="free-delivery">Бесплатно</span><span>·</span><span>50–80 мин</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="rest-card">
+        <div class="rest-photo ph-5">ВС</div>
+        <div class="rest-body">
+          <div class="rest-title">Весна</div>
+          <div class="rest-meta">
+            <span class="rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.6 4.3L18 21l-6-4.4L6 21l1.6-7.7L2 9h7z"/></svg>4.7</span>
+            <span>·</span><span>63 отзыва</span>
+          </div>
+          <div class="rest-tags"><span>5 руб. или бесплатно от 45</span></div>
+        </div>
+      </a>
+
+      <a href="#" class="rest-card">
+        <div class="rest-photo ph-3">ВБ</div>
+        <div class="rest-body">
+          <div class="rest-title">Вам Букетик</div>
+          <div class="rest-meta">
+            <span class="rating"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.6 4.3L18 21l-6-4.4L6 21l1.6-7.7L2 9h7z"/></svg>4.8</span>
+            <span>·</span><span>118 отзывов</span>
+          </div>
+          <div class="rest-tags"><span class="free-delivery">Бесплатно</span><span>·</span><span>35–55 мин</span></div>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#" class="logo">Смак<span>ота</span></a>
+        <p>Доставка еды и покупок из любимых заведений города. Заказывай, оставляй отзывы и получай баллы.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>Категории</h4>
+          <a href="#">Продукты</a>
+          <a href="#">Пицца</a>
+          <a href="#">Суши</a>
+          <a href="#">Бургеры</a>
+          <a href="#">Цветы и подарки</a>
+        </div>
+        <div class="footer-col">
+          <h4>Компания</h4>
+          <a href="#">О нас</a>
+          <a href="#">Бизнесу</a>
+          <a href="#">Рейтинги заведений</a>
+          <a href="#">Служба поддержки</a>
+        </div>
+        <div class="footer-col">
+          <h4>Документы</h4>
+          <a href="#">Пользовательское соглашение</a>
+          <a href="#">Политика конфиденциальности</a>
+          <a href="#">Cookie-файлы</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-cities">
+      Доставка в городах:
+      <a href="#">Минск</a><a href="#">Витебск</a><a href="#">Гродно</a><a href="#">Гомель</a>
+      <a href="#">Брест</a><a href="#">Могилёв</a><a href="#">Барановичи</a><a href="#">Борисов</a>
+      <a href="#">Бобруйск</a><a href="#">Молодечно</a><a href="#">Слуцк</a><a href="#">Пинск</a>
+    </div>
+
+    <div class="footer-bottom" style="margin-top:24px;">
+      <div>© 2016–2026 Смакота. Все права защищены.</div>
+      <div>2 051 заведений · 135 686 отзывов</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
