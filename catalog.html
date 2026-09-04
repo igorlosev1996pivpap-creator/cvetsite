@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Каталог — Смакота</title>
+<style>
+  :root{
+    --ink:#241B15;
+    --ink-soft:#5B5049;
+    --cream:#FFF8EF;
+    --card:#FFFFFF;
+    --line:#EEE1D2;
+    --brand:#E8491D;
+    --brand-dark:#C23814;
+    --green:#2F6F4E;
+    --yellow:#F4A300;
+    --radius-s:8px;
+    --radius-m:14px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3,.display{
+    font-family:'Fraunces','Iowan Old Style',Georgia,serif;
+    font-weight:650;
+    letter-spacing:-0.01em;
+    margin:0;
+  }
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  header{
+    position:sticky;top:0;z-index:40;
+    background:rgba(255,248,239,0.94);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--line);
+  }
+  .topbar{display:flex;align-items:center;gap:16px;padding:16px 0;}
+  .logo{
+    font-family:'Fraunces',Georgia,serif;font-size:26px;font-weight:800;
+    color:var(--brand);flex-shrink:0;
+  }
+  .logo span{color:var(--ink);}
+  .back-link{
+    display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;
+    color:var(--ink-soft);
+  }
+  .back-link:hover{color:var(--brand);}
+
+  .shop-hero{padding:32px 0 8px;}
+  .shop-photo{
+    height:150px;border-radius:var(--radius-m);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Fraunces',serif;font-size:44px;font-weight:700;color:#fff;
+    margin-bottom:18px;
+  }
+  .ph-1{background:linear-gradient(135deg,#E8491D,#F4A300);}
+  .ph-2{background:linear-gradient(135deg,#2F6F4E,#8FBF9F);}
+  .ph-3{background:linear-gradient(135deg,#5B3A29,#8C6142);}
+  .ph-4{background:linear-gradient(135deg,#C23814,#7A2A11);}
+  .ph-5{background:linear-gradient(135deg,#3A5B7D,#7CA3C4);}
+  .ph-6{background:linear-gradient(135deg,#8C5E9C,#C79FD1);}
+
+  .shop-title{font-size:30px;margin-bottom:6px;}
+  .shop-meta{
+    display:flex;align-items:center;gap:10px;font-size:14px;color:var(--ink-soft);
+    margin-bottom:8px;
+  }
+  .rating{display:inline-flex;align-items:center;gap:3px;color:var(--ink);font-weight:700;}
+  .rating svg{color:var(--yellow);}
+  .free-delivery{color:var(--green);font-weight:600;}
+
+  .cat-tabs{
+    display:flex;gap:8px;overflow-x:auto;padding:20px 0 8px;scrollbar-width:none;
+  }
+  .cat-tabs::-webkit-scrollbar{display:none;}
+  .cat-tabs button{
+    flex-shrink:0;font-size:14px;font-weight:600;color:var(--ink-soft);
+    background:var(--card);border:1px solid var(--line);
+    padding:9px 16px;border-radius:999px;white-space:nowrap;
+    font-family:inherit;cursor:pointer;
+  }
+  .cat-tabs button.active{border-color:var(--brand);color:var(--brand);background:#FFF1E7;}
+
+  .product-grid{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:18px;padding:24px 0 60px;
+  }
+  .product-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius-m);
+    overflow:hidden;
+  }
+  .product-photo{
+    height:120px;display:flex;align-items:center;justify-content:center;font-size:32px;
+  }
+  .product-body{padding:12px 14px 14px;}
+  .product-name{font-size:14px;font-weight:700;margin-bottom:4px;line-height:1.3;}
+  .product-desc{font-size:12.5px;color:var(--ink-soft);margin-bottom:10px;line-height:1.4;min-height:32px;}
+  .product-row{display:flex;align-items:center;justify-content:space-between;}
+  .product-price{font-size:15px;font-weight:700;}
+  .add-btn{
+    background:var(--brand);color:#fff;border:none;border-radius:8px;
+    width:30px;height:30px;font-size:18px;font-weight:700;line-height:1;
+  }
+  .add-btn:hover{background:var(--brand-dark);}
+
+  .not-found{padding:80px 0;text-align:center;}
+  .not-found h1{font-size:24px;margin-bottom:10px;}
+  .not-found p{color:var(--ink-soft);margin-bottom:18px;}
+  .not-found a{color:var(--brand);font-weight:600;}
+
+  @media (max-width:860px){
+    .product-grid{grid-template-columns:repeat(2,1fr);}
+  }
+  @media (max-width:480px){
+    .wrap{padding:0 16px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap topbar">
+    <a href="index.html" class="logo">Смак<span>ота</span></a>
+    <a href="index.html" class="back-link" style="margin-left:auto;">← Все цветочные магазины</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="shop-content"></div>
+</main>
+
+<script>
+  // Данные по каждому магазину: карточка + ассортимент.
+  // Ключ объекта — slug, который передаётся в ссылке ?shop=slug
+  const shops = {
+    "paneta-roz": {
+      name: "Панета Роз",
+      photoClass: "ph-4",
+      initials: "ПР",
+      rating: "4.8",
+      reviews: "184 отзыва",
+      delivery: "Бесплатная доставка · 40–60 мин",
+      products: [
+        { name: "Букет из 25 роз", desc: "Классические красные розы, эквадорская роза 60 см", price: "89,00 руб." },
+        { name: "Монобукет тюльпанов", desc: "25 тюльпанов в крафтовой упаковке", price: "42,00 руб." },
+        { name: "Композиция «Нежность»", desc: "Пионовидные розы, эустома, зелень", price: "76,00 руб." },
+        { name: "Букет невесты", desc: "Белые розы и гипсофила, свадебное оформление", price: "120,00 руб." },
+        { name: "Коробка с гортензией", desc: "Крупная гортензия в шляпной коробке", price: "68,00 руб." },
+        { name: "Букет «Полевые цветы»", desc: "Ромашки, васильки, зелень, лёгкая упаковка", price: "35,00 руб." },
+        { name: "Розы поштучно", desc: "Одна роза 60 см на ваш выбор", price: "3,50 руб." },
+        { name: "Кашпо с орхидеей", desc: "Фаленопсис в керамическом кашпо", price: "55,00 руб." },
+      ]
+    },
+    "rascvetai": {
+      name: "Расцветай",
+      photoClass: "ph-1",
+      initials: "РЦ",
+      rating: "4.9",
+      reviews: "276 отзывов",
+      delivery: "Бесплатная доставка · 30–50 мин",
+      products: [
+        { name: "Букет «Конвертик»", desc: "Компактный букет из кустовых роз в бумаге", price: "28,00 руб." },
+        { name: "25 хризантем", desc: "Кустовые хризантемы, свежая срезка", price: "24,99 руб." },
+        { name: "Букет «Letний»", desc: "Микс сезонных цветов, яркая подача", price: "45,00 руб." },
+        { name: "Композиция в корзине", desc: "Розы и альстромерии в плетёной корзине", price: "82,00 руб." },
+        { name: "Букет пионов", desc: "7 пионов, сезонное предложение", price: "58,00 руб." },
+        { name: "Мини-букет", desc: "Небольшой букет для подарка коллеге", price: "18,00 руб." },
+        { name: "Свадебная дуга", desc: "Оформление живыми цветами на выезд", price: "от 250,00 руб." },
+        { name: "Букет гвоздик", desc: "Классические гвоздики, 15 шт.", price: "22,00 руб." },
+      ]
+    },
+    "veranda": {
+      name: "Веранда",
+      photoClass: "ph-2",
+      initials: "ВР",
+      rating: "4.7",
+      reviews: "152 отзыва",
+      delivery: "Бесплатно от 60 руб. · 45–70 мин",
+      products: [
+        { name: "Шляпная коробка «Классика»", desc: "Розы и зелень в бархатной коробке", price: "95,00 руб." },
+        { name: "Букет невесты «Воздушный»", desc: "Пионы, эустома, авторская сборка", price: "135,00 руб." },
+        { name: "Композиция «Осень»", desc: "Гербера, хризантема, декоративные веточки", price: "50,00 руб." },
+        { name: "Букет «Монохром»", desc: "Розы одного оттенка, минималистичная упаковка", price: "64,00 руб." },
+        { name: "Кашпо с суккулентами", desc: "Набор из 3 суккулентов в керамике", price: "38,00 руб." },
+        { name: "Букет для мужчины", desc: "Строгая сборка из зелени и герберы", price: "40,00 руб." },
+      ]
+    },
+    "buketberi": {
+      name: "БукетБери",
+      photoClass: "ph-6",
+      initials: "ББ",
+      rating: "4.6",
+      reviews: "97 отзывов",
+      delivery: "Бесплатная доставка · 50–80 мин",
+      products: [
+        { name: "Букет «Экспресс»", desc: "Готовый букет на быстрый заказ", price: "25,00 руб." },
+        { name: "15 роз", desc: "Красные розы 50 см", price: "48,00 руб." },
+        { name: "Букет с игрушкой", desc: "Цветы и плюшевый мишка", price: "56,00 руб." },
+        { name: "Композиция в коробке", desc: "Розы, гвоздики, декоративная упаковка", price: "60,00 руб." },
+        { name: "Букет «Праздничный»", desc: "Яркий микс на день рождения", price: "44,00 руб." },
+        { name: "Букет ромашек", desc: "Полевые ромашки, лёгкая сборка", price: "20,00 руб." },
+      ]
+    },
+    "vesna": {
+      name: "Весна",
+      photoClass: "ph-5",
+      initials: "ВС",
+      rating: "4.7",
+      reviews: "63 отзыва",
+      delivery: "5 руб. или бесплатно от 45 руб. · 40–60 мин",
+      products: [
+        { name: "Букет тюльпанов 15 шт.", desc: "Сезонные тюльпаны разных оттенков", price: "26,00 руб." },
+        { name: "Композиция «Весенняя»", desc: "Нарциссы, мимоза, зелень", price: "32,00 руб." },
+        { name: "Букет ирисов", desc: "Синие ирисы, минималистичная сборка", price: "30,00 руб." },
+        { name: "Розы + эустома", desc: "Сборный букет, 21 стебель", price: "54,00 руб." },
+        { name: "Букет для учителя", desc: "Классическая сборка к 1 сентября", price: "36,00 руб." },
+        { name: "Кашпо с гиацинтами", desc: "Горшечные гиацинты, набор из 3 шт.", price: "27,00 руб." },
+      ]
+    },
+    "vam-buketik": {
+      name: "Вам Букетик",
+      photoClass: "ph-3",
+      initials: "ВБ",
+      rating: "4.8",
+      reviews: "118 отзывов",
+      delivery: "Бесплатная доставка · 35–55 мин",
+      products: [
+        { name: "Букет «Конверт с цветами»", desc: "Розы и зелень в бумажном конверте", price: "33,00 руб." },
+        { name: "21 роза", desc: "Розовые розы 60 см", price: "72,00 руб." },
+        { name: "Композиция «Нежный рассвет»", desc: "Пионовидные розы, матиола", price: "80,00 руб." },
+        { name: "Букет альстромерий", desc: "Яркий микс альстромерий, 11 шт.", price: "29,00 руб." },
+        { name: "Букет «Малышке»", desc: "Розовая гамма, декор лентой", price: "38,00 руб." },
+        { name: "Свадебная бутоньерка", desc: "Парная бутоньерка к букету невесты", price: "12,00 руб." },
+      ]
+    }
+  };
+
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('shop');
+  const shop = shops[slug];
+  const container = document.getElementById('shop-content');
+
+  function starIcon(){
+    return '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3 7h7l-5.6 4.3L18 21l-6-4.4L6 21l1.6-7.7L2 9h7z"/></svg>';
+  }
+
+  if (!shop) {
+    container.innerHTML = `
+      <div class="not-found">
+        <h1>Магазин не найден</h1>
+        <p>Проверьте ссылку или вернитесь к списку цветочных магазинов.</p>
+        <a href="index.html">← Все цветочные магазины</a>
+      </div>`;
+  } else {
+    const productsHtml = shop.products.map((p, i) => `
+      <div class="product-card">
+        <div class="product-photo ${shop.photoClass}">🌸</div>
+        <div class="product-body">
+          <div class="product-name">${p.name}</div>
+          <div class="product-desc">${p.desc}</div>
+          <div class="product-row">
+            <span class="product-price">${p.price}</span>
+            <button class="add-btn" aria-label="Добавить в корзину">+</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    container.innerHTML = `
+      <div class="shop-hero">
+        <div class="shop-photo ${shop.photoClass}">${shop.initials}</div>
+        <h1 class="shop-title">${shop.name}</h1>
+        <div class="shop-meta">
+          <span class="rating">${starIcon()}${shop.rating}</span>
+          <span>·</span><span>${shop.reviews}</span>
+        </div>
+        <div class="shop-meta"><span class="free-delivery">${shop.delivery}</span></div>
+      </div>
+      <div class="cat-tabs">
+        <button class="active">Все букеты</button>
+        <button>Розы</button>
+        <button>Композиции в коробке</button>
+        <button>Свадебная флористика</button>
+        <button>Комнатные растения</button>
+      </div>
+      <div class="product-grid">${productsHtml}</div>
+    `;
+    document.title = shop.name + " — каталог — Смакота";
+  }
+</script>
+
+</body>
+</html>
